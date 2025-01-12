@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Ezeebill Japan (JPY) Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="hidden"] {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input[type="text"]:focus {
+            border-color: #bca303;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffbf00;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #876301;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            input[type="text"],
+            input[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img src="https://assets.norbr.io/image/partners/EzeebillAsia_whitebg.svg" alt="EzeebillLogo"
+        style="display: block; margin: 20px auto; width: 200px;">
+
+    <div>
+        <form method="post" action="https://uat.atn.network/ecommerce-web/pay3p">
+            <input type="hidden" name="version" value="1.0">
+            <input type="hidden" name="action" value="SALE_ONLY">
+            <!-- TradeNetworks.Live.EWalletDepositRequests.EwalletDepositRequestId -->
+            <input type="hidden" id="merch_order_id" name="merch_order_id">
+            <!-- BO: Transaction Ref Number -->
+            <input type="hidden" name="merch_txn_id">
+
+            <!-- API creds by Ezeebill -->
+            <input type="hidden" name="merch_id" value="100103000027701">
+            <input type="hidden" name="term_id" value="TERM_0001">
+            <input type="hidden" name="access_id" value="qOP5SCOO">
+            <input type="hidden" name="pay_type" value="IB">
+            <!-- 764 is the currency code for THB -->
+            <input type="hidden" name="currency" value="764">
+            <!-- End of API creds -->
+
+            <!-- User details (CRM)-->
+            <input type="hidden" name="bill_to_first_name" value="Tony">
+            <input type="hidden" name="bill_to_last_name" value="Stoyanov">
+            <input type="hidden" name="bill_to_email" value="tony.stoyanov@tiebreak.dev">
+            <input type="hidden" name="bill_to_phone" value="359888123456">
+            <input type="hidden" name="bill_to_address" value="8/6 Sukhumvit 62 Bangjak">
+            <input type="hidden" name="bill_to_city" value="Bangkok">
+            <input type="hidden" name="ship_to_postal_code" value="10250">
+            <input type="hidden" name="bill_to_country_code" value="TH">
+            <!-- End of user details (CRM) -->
+
+            <!-- JPY is 1:1. Do not convert to cents -->
+            <label for="amount">amount &#x1F1F9;&#x1F1ED;
+            </label>
+            <input type="text" name="amount" value="32000">
+
+            <input type="hidden" name="return_url" value="https://tnstoyanov.github.io/return.html">
+            <input type="hidden" name="data_feed_url" value="https://a72abe1443d355e6a1339222445f25f1.m.pipedream.net">
+            <input type="hidden" name="locale" value="en_us">
+            <!-- for JP bank transfers only
+            <label for="pay_to_acc_name">pay_to_acc_name &#x1F1EF;&#x1F1F5;:</label>
+            <input type="text" name="pay_to_acc_name" value="Katakana">
+        -->
+            <input type="hidden" name="remark" value="Test Deposit">
+
+            <input type="submit" value="DEPOSIT &#x1F1F9;&#x1F1ED;
+">
+        </form>
+    </div>
+
+    <script>
+        // Generate a random number between 1111111 and 9999999
+        function generateRandomOrderId() {
+            return Math.floor(Math.random() * (9999999 - 1111111 + 1)) + 1111111;
+        }
+
+        /* Uncomment if you want to use the timestamp format for the transaction ref number
+                // Get the current date and time in YYYYMMDDHHmmss format
+                function getCurrentTimestamp() {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+                }
+        */
+
+        // Combine timestamp and random number
+        // const timestamp = getCurrentTimestamp();
+        const merch_order_id = generateRandomOrderId();
+        // const merch_txn_id = timestamp + request_id;
+        const merch_txn_id = merch_order_id
+
+        // Set the value of merch_order_id and merch_txn_id
+        document.getElementById('merch_order_id').value = merch_order_id;
+        document.getElementsByName('merch_txn_id')[0].value = merch_txn_id;
+    </script>
+</body>
+
+</html>
