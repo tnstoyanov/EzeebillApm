@@ -39,7 +39,8 @@
         }
 
         input[type="text"],
-        input[type="hidden"] {
+        input[type="hidden"],
+        select {
             width: calc(100% - 16px);
             padding: 10px;
             margin-bottom: 20px;
@@ -96,12 +97,19 @@
             <!-- <input type="text" name="merch_txn_id" placeholder="Transcaction Ref Number"> -->
             <input type="hidden" name="version" value="1.0">
             <input type="hidden" name="action" value="QUERY_TXN">
+            <select name="merch_id" id="merch_id">
+                <option value="" disabled selected>Select your merchant account</option>
+                <option value="100103000027801">&#x1F1EF;&#x1F1F5;
+                     Japan Bank Transfer (Demo)</option>
+                <option value="100103000027701">&#x1F1F9;&#x1F1ED;
+                    Thailand Bank Transfer (Demo)</option>
+            </select>
             <input type="hidden" name="merch_id" value="100103000027801">
             <input type="hidden" name="term_id" value="TERM_0001">
             <input type="hidden" name="access_id" value="YiAneEq7">
             <input type="hidden" name="operator_id" value="api_access">
             <input type="hidden" name="password" value="84763#sa">
-            <input type="submit" value="Submit">
+            <input type="submit" value="SUBMIT">
         </form>
     </div>
 </body>
