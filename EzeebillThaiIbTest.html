@@ -97,7 +97,7 @@
             <!-- TradeNetworks.Live.EWalletDepositRequests.EwalletDepositRequestId -->
             <input type="hidden" id="merch_order_id" name="merch_order_id">
             <!-- BO: Transaction Ref Number -->
-            <input type="hidden" name="merch_txn_id">
+            <!-- <input type="hidden" name="merch_txn_id"> -->
 
             <!-- API creds by Ezeebill -->
             <input type="hidden" name="merch_id" value="100103000027701">
@@ -162,11 +162,11 @@
         // const timestamp = getCurrentTimestamp();
         const merch_order_id = generateRandomOrderId();
         // const merch_txn_id = timestamp + request_id;
-        const merch_txn_id = merch_order_id
+        // const merch_txn_id = merch_order_id
 
         // Set the value of merch_order_id and merch_txn_id
         document.getElementById('merch_order_id').value = merch_order_id;
-        document.getElementsByName('merch_txn_id')[0].value = merch_txn_id;
+        // document.getElementsByName('merch_txn_id')[0].value = merch_txn_id;
     </script>
 </body>
 
