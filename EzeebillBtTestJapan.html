@@ -91,13 +91,12 @@
         style="display: block; margin: 20px auto; width: 200px;">
 
     <div>
-        <form method="post" action="https://uat.atn.network/ecommerce-web/pay3p">
+        <form id="paymentForm" method="post" action="https://uat.atn.network/ecommerce-web/pay3p">
             <input type="hidden" name="version" value="1.0">
             <input type="hidden" name="action" value="SALE_ONLY">
-            <!-- TradeNetworks.Live.EWalletDepositRequests.EwalletDepositRequestId -->
             <input type="hidden" id="merch_order_id" name="merch_order_id">
-            <!-- BO: Transaction Ref Number -->
             <input type="hidden" name="merch_txn_id">
+            <input type="hidden" name="secure_hash">
 
             <!-- API creds by Ezeebill -->
             <input type="hidden" name="merch_id" value="100103000027801">
@@ -105,65 +104,67 @@
             <input type="hidden" name="access_id" value="YiAneEq7">
             <input type="hidden" name="pay_type" value="BT">
             <input type="hidden" name="currency" value="392">
-            <!-- End of API creds -->
 
-            <!-- User details (CRM)-->
-            <input type="hidden" name="bill_to_first_name" value="Tony">
-            <input type="hidden" name="bill_to_last_name" value="Stoyanov">
-            <input type="hidden" name="bill_to_email" value="tony.stoyanov@tiebreak.dev">
-            <input type="hidden" name="bill_to_phone" value="359888123456">
-            <input type="hidden" name="bill_to_address" value="3 Chome-11-12 Shibuya">
-            <input type="hidden" name="bill_to_city" value="Tokyo">
-            <input type="hidden" name="ship_to_postal_code" value="150-0002">
-            <input type="hidden" name="bill_to_country_code" value="JP">
-            <!-- End of user details (CRM) -->
-
-            <!-- JPY is 1:1. Do not convert to cents -->
+            <!-- User details (CRM) -->
             <label for="amount">amount &#x1F1EF;&#x1F1F5;:</label>
             <input type="text" name="amount" value="32000">
 
-            <input type="hidden" name="return_url" value="https://tnstoyanov.github.io/return.html">
-            <input type="hidden" name="data_feed_url" value="https://a72abe1443d355e6a1339222445f25f1.m.pipedream.net">
-            <input type="hidden" name="locale" value="ja_jp">
-
             <label for="pay_to_acc_name">pay_to_acc_name &#x1F1EF;&#x1F1F5;:</label>
             <input type="text" name="pay_to_acc_name" value="Katakana">
-
-            <input type="hidden" name="remark" value="Test Deposit">
 
             <input type="submit" value="DEPOSIT &#x1F1EF;&#x1F1F5;">
         </form>
     </div>
 
+    <!-- Add CryptoJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        // Generate a random number between 1111111 and 9999999
+        // Generate a random order ID
         function generateRandomOrderId() {
             return Math.floor(Math.random() * (9999999 - 1111111 + 1)) + 1111111;
         }
 
-        /* Uncomment if you want to use the timestamp format for the transaction ref number
-                // Get the current date and time in YYYYMMDDHHmmss format
-                function getCurrentTimestamp() {
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                    return `${year}${month}${day}${hours}${minutes}${seconds}`;
-                }
-        */
+        // Calculate HMAC SHA-1 hash
+        function calculateHash() {
+            const secretKey = "D1py3d7kODPoyF5mQ7VzZMrwaCVa4xTC";
+            const form = document.getElementById("paymentForm");
 
-        // Combine timestamp and random number
-        // const timestamp = getCurrentTimestamp();
-        const merch_order_id = generateRandomOrderId();
-        // const merch_txn_id = timestamp + request_id;
-        const merch_txn_id = merch_order_id
+            // Get the values in the correct order
+            const params = [
+                form.querySelector("[name='access_id']").value, // access_id
+                form.querySelector("[name='action']").value,    // action
+                form.querySelector("[name='amount']").value,    // amount
+                form.querySelector("[name='currency']").value,  // currency
+                form.querySelector("[name='merch_id']").value,  // merch_id
+                form.querySelector("[name='merch_order_id']").value,    // merch_order_id
+                form.querySelector("[name='merch_txn_id']").value,      // merch_txn_id
+                form.querySelector("[name='pay_to_acc_name']").value,  // pay_to_acc_name
+                form.querySelector("[name='pay_type']").value,  // pay_type
+                form.querySelector("[name='term_id']").value,   // term_id
+                form.querySelector("[name='version']").value    // version
+            ];
 
-        // Set the value of merch_order_id and merch_txn_id
-        document.getElementById('merch_order_id').value = merch_order_id;
-        document.getElementsByName('merch_txn_id')[0].value = merch_txn_id;
+            // Concatenate the values and log them for debugging
+            const message = params.join("");
+            console.log("Concatenated string for hash:", message);
+
+            // Calculate HMAC SHA-1 hash
+            const hash = CryptoJS.HmacSHA1(message, secretKey).toString(CryptoJS.enc.Hex);
+            console.log("Generated hash:", hash);
+
+            return hash;
+        }
+
+        // Assign values dynamically and add the hash before submission
+        const form = document.getElementById("paymentForm");
+        form.addEventListener("submit", function (event) {
+            const merch_order_id = generateRandomOrderId();
+            document.getElementById("merch_order_id").value = merch_order_id;
+            form.querySelector("[name='merch_txn_id']").value = merch_order_id;
+
+            const hash = calculateHash();
+            form.querySelector("[name='secure_hash']").value = hash;
+        });
     </script>
 </body>
 
