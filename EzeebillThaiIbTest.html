@@ -92,20 +92,23 @@
 
     <div>
         <form id="paymentForm" method="post" action="https://uat.atn.network/ecommerce-web/pay3p">
+            <!-- API creds by Ezeebill -->
             <input type="hidden" name="version" value="1.0">
             <input type="hidden" name="action" value="SALE_ONLY">
-            <input type="hidden" id="merch_order_id" name="merch_order_id">
-            <input type="hidden" name="merch_txn_id">
+            <!-- Use HMAC SHA-1 for the secure_hash. See my script below. -->
             <input type="hidden" name="secure_hash">
-
-            <!-- API creds by Ezeebill -->
             <input type="hidden" name="merch_id" value="100103000027701">
             <input type="hidden" name="term_id" value="TERM_0001">
             <input type="hidden" name="access_id" value="qOP5SCOO">
             <input type="hidden" name="pay_type" value="IB">
             <input type="hidden" name="currency" value="764">
+            <!-- End of API creds by Ezeebill -->
 
             <!-- User details (CRM)-->
+            <!-- Random order ID. TradeNetworks.Billing.EwalletDepositRequests.EWalletDepositRequestId -->
+            <input type="hidden" id="merch_order_id" name="merch_order_id">
+            <!-- Same as the merch_order_id -->
+            <input type="hidden" name="merch_txn_id">
             <input type="hidden" name="bill_to_first_name" value="Tony">
             <input type="hidden" name="bill_to_last_name" value="Jaa">
             <input type="hidden" name="bill_to_email" value="tony.stoyanov@tiebreak.dev">
@@ -118,9 +121,10 @@
 
             <label for="amount">amount &#x1F1F9;&#x1F1ED;</label>
             <input type="text" name="amount" value="32000">
-
+            <!-- Not required as per Ezeebill for Thai internet banking  -->
             <label for="pay_to_acc_name">pay_to_acc_name &#x1F1F9;&#x1F1ED;</label>
             <input type="text" name="pay_to_acc_name" value="">
+            <input type="hidden" name="return_url" value="https://tnstoyanov.github.io/return.html">
 
             <input type="submit" value="DEPOSIT &#x1F1F9;&#x1F1ED;">
         </form>
@@ -158,6 +162,7 @@
                 form.querySelector("[name='merch_txn_id']").value,      // merch_txn_id
                 form.querySelector("[name='pay_to_acc_name']").value,  // pay_to_acc_name
                 form.querySelector("[name='pay_type']").value,  // pay_type
+                form.querySelector("[name='return_url']").value,    // return_url
                 form.querySelector("[name='term_id']").value,   // term_id
                 form.querySelector("[name='version']").value    // version
             ];
@@ -182,6 +187,8 @@
 
             const hash = calculateHash();
             form.querySelector("[name='secure_hash']").value = hash;
+
+            console.log("Submitting form with order ID", merch_order_id);
         });
     </script>
 </body>
