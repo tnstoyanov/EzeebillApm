@@ -123,6 +123,7 @@
             <input type="text" name="amount" value="32000">
             <!-- Required as per Ezeebill for Japanese Bank Transfer (BT) -->
             <label for="pay_to_acc_name">pay_to_acc_name &#x1F1EF;&#x1F1F5;:</label>
+            <input type="hidden" name="locale" value="ja_jp">
             <input type="text" name="pay_to_acc_name" value="Katakana">
             <input type="hidden" name="return_url" value="https://tnstoyanov.github.io/return.html">
 
@@ -157,6 +158,7 @@
                 form.querySelector("[name='bill_to_phone']").value,    // bill_to_phone
                 form.querySelector("[name='bill_to_postal_code']").value,    // bill_to_postal_code
                 form.querySelector("[name='currency']").value,  // currency
+                form.querySelector("[name='locale']").value,    // locale
                 form.querySelector("[name='merch_id']").value,  // merch_id
                 form.querySelector("[name='merch_order_id']").value,    // merch_order_id
                 form.querySelector("[name='merch_txn_id']").value,      // merch_txn_id
