@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Form with Select Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px; /* Adjusted for consistent layout */
+        }
+        img {
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <img src="https://assets.norbr.io/image/partners/EzeebillAsia_whitebg.svg" alt="Ezeebill Logo">
+        <form id="linkForm">
+            <label for="linkSelect">Choose a link to visit:</label>
+            <select id="linkSelect" name="links">
+                <option value="" disabled selected>Select an option</option>
+                <option value="https://tnstoyanov.github.io/EzeebillBtTestJapan.html">Ezeebill BT Test Japan</option>
+                <option value="https://tnstoyanov.github.io/EzeebillQueryTxnJapanBt.html">Ezeebill Query Txn Japan BT</option>
+                <option value="https://tnstoyanov.github.io/EzeebillThaiIbTest.html">Ezeebill Thai IB Test</option>
+                <option value="https://tnstoyanov.github.io/EzeebillThailandIBTxnQuery.html">Ezeebill Thailand IB Txn Query</option>
+            </select>
+            <button type="button" onclick="goToLink()">Go</button>
+        </form>
+    </div>
+    <script>
+        function goToLink() {
+            const selectElement = document.getElementById('linkSelect');
+            const selectedValue = selectElement.value;
+            if (selectedValue) {
+                window.location.href = selectedValue;
+            } else {
+                alert('Please select a link first!');
+            }
+        }
+    </script>
+</body>
+</html>
