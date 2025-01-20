@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Ezeebill Japan (BT) Tests</title>
     <style>
         body {
@@ -124,7 +124,7 @@
             <!-- Required as per Ezeebill for Japanese Bank Transfer (BT) -->
             <label for="pay_to_acc_name">pay_to_acc_name &#x1F1EF;&#x1F1F5;:</label>
             <input type="hidden" name="locale" value="ja_jp">
-            <input type="text" name="pay_to_acc_name" value="Katakana">
+            <input type="text" name="pay_to_acc_name" placeholder="account holder name (in Katakana)" required>
             <input type="hidden" name="return_url" value="https://a72abe1443d355e6a1339222445f25f1.m.pipedream.net">
 
             <input type="submit" value="DEPOSIT &#x1F1EF;&#x1F1F5;">
