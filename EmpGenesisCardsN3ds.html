@@ -80,32 +80,34 @@
     </billing_address>
 </payment_transaction>`;
 
-            // Assuming you're using fetch to get the response from your backend
-
-fetch('https://eo2uig59l8rs3n8.m.pipedream.net', {
-    method: 'POST',
-    body: formData,  // Your form data here
-})
-.then(response => response.text())  // Get the response as text (XML)
-.then(data => {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data, 'text/xml');
-    
-    const status = xmlDoc.getElementsByTagName('status')[0].textContent;
-    const message = xmlDoc.getElementsByTagName('message')[0].textContent;
-    
-    if (status === 'error') {
-        // Display error message from backend
-        alert(`Error: ${message}`);
-    } else {
-        // Handle success (if applicable)
-        alert('Success!');
-    }
-})
-.catch(error => {
-    console.error('Error:', error);
-});
-
+            // Send the request to the backend with the requestBody
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/xml',  // Set the content type to XML
+                },
+                body: requestBody,  // Use requestBody here
+            })
+            .then(response => response.text())  // Get the response as text (XML)
+            .then(data => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, 'text/xml');
+                
+                const status = xmlDoc.getElementsByTagName('status')[0].textContent;
+                const message = xmlDoc.getElementsByTagName('message')[0].textContent;
+                
+                if (status === 'error') {
+                    // Display error message from backend
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
+                } else {
+                    // Handle success
+                    document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>
