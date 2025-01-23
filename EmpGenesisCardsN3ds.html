@@ -98,26 +98,31 @@
                     throw new Error('Network response was not ok.');
                 }
             })
-            .then(data => {
-                // Check if the response is actually XML
-                console.log("Response data:", data);
+           .then(data => {
+    console.log("Received data:", data);  // Log the raw response
 
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data, 'text/xml');
-                const status = xmlDoc.getElementsByTagName('status')[0].textContent;
-                const message = xmlDoc.getElementsByTagName('message')[0].textContent;
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data, 'text/xml');
+    
+    const statusElement = xmlDoc.getElementsByTagName('status')[0];
+    const messageElement = xmlDoc.getElementsByTagName('message')[0];
 
-                if (status === 'error') {
-                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
-                } else {
-                    document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Unable to process request.</div>`;
-            });
+    // Check if the elements exist
+    if (statusElement && messageElement) {
+        const status = statusElement.textContent;
+        const message = messageElement.textContent;
+
+        if (status === 'error') {
+            document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
+        } else {
+            document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
         }
+    } else {
+        console.error("Error parsing XML:", data);
+        document.getElementById('responseContainer').innerHTML = `<div class="error-message">Invalid response from the backend</div>`;
+    }
+})
+
     </script>
 </body>
 </html>
