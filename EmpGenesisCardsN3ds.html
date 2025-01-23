@@ -80,44 +80,32 @@
     </billing_address>
 </payment_transaction>`;
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/xml'
-                },
-                body: requestBody
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log('Response:', data);
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data, 'text/xml');
-                const status = xmlDoc.getElementsByTagName('status')[0]?.textContent;
-                const message = xmlDoc.getElementsByTagName('message')[0]?.textContent;
-                const technicalMessage = xmlDoc.getElementsByTagName('technical_message')[0]?.textContent;
+            // Assuming you're using fetch to get the response from your backend
 
-                const responseContainer = document.getElementById('responseContainer');
-                responseContainer.innerHTML = '';
+fetch('YOUR_BACKEND_URL', {
+    method: 'POST',
+    body: formData,  // Your form data here
+})
+.then(response => response.text())  // Get the response as text (XML)
+.then(data => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data, 'text/xml');
+    
+    const status = xmlDoc.getElementsByTagName('status')[0].textContent;
+    const message = xmlDoc.getElementsByTagName('message')[0].textContent;
+    
+    if (status === 'error') {
+        // Display error message from backend
+        alert(`Error: ${message}`);
+    } else {
+        // Handle success (if applicable)
+        alert('Success!');
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+});
 
-                if (status === 'error') {
-                    const errorMessage = document.createElement('div');
-                    errorMessage.classList.add('error-message');
-                    errorMessage.textContent = `${message} (${technicalMessage})`;
-                    responseContainer.appendChild(errorMessage);
-                } else {
-                    responseContainer.textContent = 'Transaction successful!';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error.message);
-                const responseContainer = document.getElementById('responseContainer');
-                responseContainer.innerHTML = '';
-                const errorMessage = document.createElement('div');
-                errorMessage.classList.add('error-message');
-                errorMessage.textContent = 'An error occurred while processing the request.';
-                responseContainer.appendChild(errorMessage);
-            });
-        }
     </script>
 </body>
 </html>
