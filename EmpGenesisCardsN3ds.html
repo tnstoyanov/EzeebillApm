@@ -99,7 +99,9 @@
                 }
             })
             .then(data => {
-                // Try parsing the XML response
+                // Check if the response is actually XML
+                console.log("Response data:", data);
+
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
                 const status = xmlDoc.getElementsByTagName('status')[0].textContent;
