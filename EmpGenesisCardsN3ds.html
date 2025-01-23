@@ -54,6 +54,7 @@
     <div id="responseContainer"></div>
 
     <script>
+        // Make sure the function is defined before it's used in the button's onclick handler
         function sendRequest() {
             const amount = document.getElementById('amount').value;
             const url = 'https://eo2uig59l8rs3n8.m.pipedream.net';  // Pipedream URL
@@ -98,31 +99,24 @@
                     throw new Error('Network response was not ok.');
                 }
             })
-           .then(data => {
-    console.log("Received data:", data);  // Log the raw response
+            .then(data => {
+                // Try parsing the XML response
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, 'text/xml');
+                const status = xmlDoc.getElementsByTagName('status')[0].textContent;
+                const message = xmlDoc.getElementsByTagName('message')[0].textContent;
 
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data, 'text/xml');
-    
-    const statusElement = xmlDoc.getElementsByTagName('status')[0];
-    const messageElement = xmlDoc.getElementsByTagName('message')[0];
-
-    // Check if the elements exist
-    if (statusElement && messageElement) {
-        const status = statusElement.textContent;
-        const message = messageElement.textContent;
-
-        if (status === 'error') {
-            document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
-        } else {
-            document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                if (status === 'error') {
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
+                } else {
+                    document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Unable to process request.</div>`;
+            });
         }
-    } else {
-        console.error("Error parsing XML:", data);
-        document.getElementById('responseContainer').innerHTML = `<div class="error-message">Invalid response from the backend</div>`;
-    }
-})
-
     </script>
 </body>
 </html>
