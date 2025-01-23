@@ -100,16 +100,33 @@
                 }
             })
             .then(data => {
+                // Log the raw response to inspect the structure
+                console.log('Raw XML Response:', data);
+                
                 // Try parsing the XML response
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
-                const status = xmlDoc.getElementsByTagName('status')[0].textContent;
-                const message = xmlDoc.getElementsByTagName('message')[0].textContent;
 
-                if (status === 'error') {
-                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
+                // Log the parsed XML document
+                console.log('Parsed XML Document:', xmlDoc);
+
+                // Check for the status and message elements safely
+                const statusElement = xmlDoc.getElementsByTagName('status')[0];
+                const messageElement = xmlDoc.getElementsByTagName('message')[0];
+
+                if (statusElement && messageElement) {
+                    const status = statusElement.textContent;
+                    const message = messageElement.textContent;
+
+                    if (status === 'error') {
+                        document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
+                    } else {
+                        document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                    }
                 } else {
-                    document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                    // If the status or message is not found, log the XML structure
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Invalid response format.</div>`;
+                    console.error('Invalid XML structure:', xmlDoc);
                 }
             })
             .catch(error => {
