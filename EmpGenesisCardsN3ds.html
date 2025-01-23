@@ -54,7 +54,6 @@
     <div id="responseContainer"></div>
 
     <script>
-        // Make sure the function is defined before it's used in the button's onclick handler
         function sendRequest() {
             const amount = document.getElementById('amount').value;
             const url = 'https://eo2uig59l8rs3n8.m.pipedream.net';  // Pipedream URL
@@ -100,17 +99,25 @@
                 }
             })
             .then(data => {
-                // Log the raw response to inspect the structure
+                // Log the raw XML response to inspect its structure
                 console.log('Raw XML Response:', data);
-                
+
                 // Try parsing the XML response
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
 
-                // Log the parsed XML document
+                // Log the parsed XML document to understand its structure
                 console.log('Parsed XML Document:', xmlDoc);
 
-                // Check for the status and message elements safely
+                // Check for any errors in parsing
+                const parserErrors = xmlDoc.getElementsByTagName('parsererror');
+                if (parserErrors.length > 0) {
+                    console.error('XML Parsing Error:', parserErrors[0].textContent);
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Invalid XML format.</div>`;
+                    return;
+                }
+
+                // Try to get the status and message elements
                 const statusElement = xmlDoc.getElementsByTagName('status')[0];
                 const messageElement = xmlDoc.getElementsByTagName('message')[0];
 
@@ -124,9 +131,9 @@
                         document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
                     }
                 } else {
-                    // If the status or message is not found, log the XML structure
-                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Invalid response format.</div>`;
-                    console.error('Invalid XML structure:', xmlDoc);
+                    // Log the XML structure to the console if status or message is missing
+                    console.error('Status or message not found in the response:', xmlDoc);
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Response format is unexpected.</div>`;
                 }
             })
             .catch(error => {
