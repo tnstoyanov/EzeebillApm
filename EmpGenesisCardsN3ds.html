@@ -93,12 +93,12 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Check if the response is XML or plain text
+                    // Check if the response is XML
                     const contentType = response.headers.get('Content-Type');
                     if (contentType && contentType.includes('application/xml')) {
                         return response.text();  // Parse the XML text
                     } else {
-                        return response.text();  // Treat as plain text
+                        return response.text();  // Treat as plain text if not XML
                     }
                 } else {
                     throw new Error('Network response was not ok.');
@@ -112,7 +112,7 @@
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
 
-                // Check if there are any XML parsing errors
+                // Check for any XML parsing errors
                 const parserErrors = xmlDoc.getElementsByTagName('parsererror');
                 if (parserErrors.length > 0) {
                     console.error('XML Parsing Error:', parserErrors[0].textContent);
@@ -128,6 +128,7 @@
                     const status = statusElement.textContent;
                     const message = messageElement.textContent;
 
+                    // Check status and display relevant message
                     if (status === 'error') {
                         document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
                     } else {
