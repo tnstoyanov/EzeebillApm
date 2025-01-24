@@ -93,23 +93,26 @@
             })
             .then(response => {
                 if (response.ok) {
-                    return response.text();  // Parse the XML text
+                    // Check if the response is XML or plain text
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.includes('application/xml')) {
+                        return response.text();  // Parse the XML text
+                    } else {
+                        return response.text();  // Treat as plain text
+                    }
                 } else {
                     throw new Error('Network response was not ok.');
                 }
             })
             .then(data => {
-                // Log the raw XML response to inspect its structure
-                console.log('Raw XML Response:', data);
+                // Log the raw response to inspect its structure
+                console.log('Raw Response:', data);
 
-                // Try parsing the XML response
+                // Check if the response is in XML format
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
 
-                // Log the parsed XML document to understand its structure
-                console.log('Parsed XML Document:', xmlDoc);
-
-                // Check for any errors in parsing
+                // Check if there are any XML parsing errors
                 const parserErrors = xmlDoc.getElementsByTagName('parsererror');
                 if (parserErrors.length > 0) {
                     console.error('XML Parsing Error:', parserErrors[0].textContent);
@@ -117,7 +120,7 @@
                     return;
                 }
 
-                // Try to get the status and message elements
+                // Handle the response based on XML content
                 const statusElement = xmlDoc.getElementsByTagName('status')[0];
                 const messageElement = xmlDoc.getElementsByTagName('message')[0];
 
@@ -128,12 +131,12 @@
                     if (status === 'error') {
                         document.getElementById('responseContainer').innerHTML = `<div class="error-message">${message}</div>`;
                     } else {
-                        document.getElementById('responseContainer').innerHTML = `<div class="success-message">Success!</div>`;
+                        document.getElementById('responseContainer').innerHTML = `<div class="success-message">${message}</div>`;
                     }
                 } else {
-                    // Log the XML structure to the console if status or message is missing
-                    console.error('Status or message not found in the response:', xmlDoc);
-                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Response format is unexpected.</div>`;
+                    // Handle case when XML structure is unexpected
+                    console.error('Unexpected XML response structure:', xmlDoc);
+                    document.getElementById('responseContainer').innerHTML = `<div class="error-message">Error: Unexpected response format.</div>`;
                 }
             })
             .catch(error => {
