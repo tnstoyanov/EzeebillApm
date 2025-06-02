@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Ezeebill Japan (BT) Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="hidden"] {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input[type="text"]:focus {
+            border-color: #bca303;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffbf00;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #876301;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            input[type="text"],
+            input[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img src="https://assets.norbr.io/image/partners/EzeebillAsia_whitebg.svg" alt="EzeebillLogo"
+        style="display: block; margin: 20px auto; width: 200px;">
+
+    <div>
+        <form id="paymentForm" method="post" action="https://txn2.atn.network/ecommerce-web/pay3p">
+            <!-- API creds by Ezeebill -->
+            <input type="hidden" name="version" value="1.0">
+            <input type="hidden" name="action" value="SALE_ONLY">
+            <!-- Use HMAC SHA-1 for the secure_hash. See my script below. -->
+            <input type="hidden" name="secure_hash">
+            <input type="hidden" name="merch_id" value="100101000086701">
+            <input type="hidden" name="term_id" value="TERM_0001">
+            <input type="hidden" name="access_id" value="LgMCQzW5">
+            <input type="hidden" name="pay_type" value="BT">
+            <input type="hidden" name="pay_item" value="Ezeebill deposit">
+            <!-- We need to hardcode this currency ID for JPY -->
+            <input type="hidden" name="currency" value="392">
+            <!-- End of API creds by Ezeebill -->
+
+            <!-- User details (CRM)-->
+            <!-- Random order ID. TradeNetworks.Billing.EwalletDepositRequests.EWalletDepositRequestId -->
+            <input type="hidden" id="merch_order_id" name="merch_order_id">
+            <!-- Same as the merch_order_id -->
+            <input type="hidden" name="merch_txn_id">
+            <input type="hidden" name="bill_to_first_name" value="Tony">
+            <input type="hidden" name="bill_to_last_name" value="Stoyanov">
+            <input type="hidden" name="bill_to_email_address" value="tony.stoyanov@tiebreak.dev">
+            <input type="hidden" name="bill_to_phone" value="359888123456">
+            <input type="hidden" name="bill_to_street" value="3 Chome-11-12 Shibuya">
+            <input type="hidden" name="bill_to_city" value="Tokyo">
+            <input type="hidden" name="bill_to_postal_code" value="150-0002">
+            <input type="hidden" name="bill_to_country_code" value="JP">
+            <input type="hidden" name="bill_to_state_code" value="JP">
+            <input type="hidden" name="phone_no" value="359888123456">
+            <input type="hidden" name="pay_to_bank_code" value="10002354748">
+            <input type="hidden" name="pay_to_bank_name" value="Industrial and Commercial Bank of China">
+            <!-- This will get and set end the end user's IP address in the customer_ip_address input -->
+            <input type="hidden" name="customer_ip_address" id="customer_ip_address" value="">
+            <script>
+                // Fetch the user's public IP address and set it in the hidden input
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('customer_ip_address').value = data.ip;
+                    })
+                    .catch(() => {
+                        document.getElementById('customer_ip_address').value = '';
+                    });
+            </script>
+            <!-- End of customer_ip_address -->
+            <!-- End of user details (CRM) -->
+
+            <label for="amount">amount &#x1F1EF;&#x1F1F5;:</label>
+            <input type="text" name="amount" value="32000">
+            <!-- Required as per Ezeebill for Japanese Bank Transfer (BT) -->
+            <label for="pay_to_acc_name">pay_to_acc_name &#x1F1EF;&#x1F1F5;:</label>
+            <input type="hidden" name="locale" value="ja_jp">
+            <input type="text" name="pay_to_acc_name" placeholder="account holder name (in Katakana)" required>
+            <input type="hidden" name="return_url" value="https://a72abe1443d355e6a1339222445f25f1.m.pipedream.net">
+
+            <input type="submit" value="DEPOSIT &#x1F1EF;&#x1F1F5;">
+        </form>
+    </div>
+
+    <!-- Add CryptoJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // Generate a random order ID
+        function generateRandomOrderId() {
+            return Math.floor(Math.random() * (9999999 - 1111111 + 1)) + 1111111;
+        }
+
+        // Calculate HMAC SHA-1 hash
+        function calculateHash() {
+            // Default Hash Key provided by Ezeebill
+            const secretKey = "QGLp1BxFk0sXiXO7HKqFJlsGwAAmUONm";
+            const form = document.getElementById("paymentForm");
+
+            // Get the values in the correct order
+            const params = [
+                form.querySelector("[name='access_id']").value, // access_id
+                form.querySelector("[name='action']").value, // action
+                form.querySelector("[name='amount']").value, // amount
+                form.querySelector("[name='bill_to_city']").value, // bill_to_city
+                form.querySelector("[name='bill_to_country_code']").value, // bill_to_country_code
+                form.querySelector("[name='bill_to_email_address']").value, // bill_to_email_address
+                form.querySelector("[name='bill_to_first_name']").value, // bill_to_first_name
+                form.querySelector("[name='bill_to_last_name']").value, // bill_to_last_name
+                form.querySelector("[name='bill_to_phone']").value, // bill_to_phone
+                form.querySelector("[name='bill_to_postal_code']").value, // bill_to_postal_code
+                form.querySelector("[name='bill_to_state_code']").value, // bill_to_state_code
+                form.querySelector("[name='bill_to_street']").value, // bill_to_street
+                form.querySelector("[name='currency']").value, // currency
+                form.querySelector("[name='customer_ip_address']").value, // customer_ip_address
+                form.querySelector("[name='locale']").value, // locale
+                form.querySelector("[name='merch_id']").value, // merch_id
+                form.querySelector("[name='merch_order_id']").value, // merch_order_id
+                form.querySelector("[name='merch_txn_id']").value, // merch_txn_id
+                form.querySelector("[name='pay_item']").value, // pay_item
+                form.querySelector("[name='pay_to_acc_name']").value, // pay_to_acc_name
+                form.querySelector("[name='pay_to_bank_code']").value, // pay_to_bank_code
+                form.querySelector("[name='pay_to_bank_name']").value, // pay_to_bank_name
+                form.querySelector("[name='pay_type']").value, // pay_type
+                form.querySelector("[name='phone_no']").value, // phone_no
+                form.querySelector("[name='return_url']").value, // return_url
+                form.querySelector("[name='term_id']").value, // term_id
+                form.querySelector("[name='version']").value // version
+            ];
+
+            // Concatenate the values and log them for debugging
+            const message = params.join("");
+            console.log("Concatenated string for hash:", message);
+
+            // Calculate HMAC SHA-1 hash
+            const hash = CryptoJS.HmacSHA1(message, secretKey).toString(CryptoJS.enc.Hex);
+            console.log("Generated hash:", hash);
+
+            return hash;
+        }
+
+        // Assign values dynamically and add the hash before submission
+        const form = document.getElementById("paymentForm");
+        form.addEventListener("submit", function (event) {
+            const merch_order_id = generateRandomOrderId();
+            document.getElementById("merch_order_id").value = merch_order_id;
+            form.querySelector("[name='merch_txn_id']").value = merch_order_id;
+
+            const hash = calculateHash();
+            form.querySelector("[name='secure_hash']").value = hash;
+
+            console.log("Submitting form with order ID", merch_order_id);
+        });
+    </script>
+</body>
+
+</html>
